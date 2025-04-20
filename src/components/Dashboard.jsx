@@ -2,14 +2,15 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import ThreatTypeChart from './ThreatTypeChart';
+import SourceCountsChart from './SourceCountsChart'; // Import the new chart component
 
 function Dashboard({ user }) {
   const [ipCount, setIpCount] = useState(null);
   const [domainCount, setDomainCount] = useState(null);
   const [urlCount, setUrlCount] = useState(null);
   const [hashCount, setHashCount] = useState(null);
+  const [sourceCounts, setSourceCounts] = useState([]);
   const [error, setError] = useState('');
-
 
   useEffect(() => {
     const fetchThreatData = async () => {
@@ -28,19 +29,20 @@ function Dashboard({ user }) {
           domain,
           url,
           hash,
+          sources,
         ] = await Promise.all([
           axiosInstance.get('http://localhost:8000/threat_ip_count'),
           axiosInstance.get('http://localhost:8000/threat_domain_count'),
           axiosInstance.get('http://localhost:8000/threat_url_count'),
           axiosInstance.get('http://localhost:8000/threat_hash_count'),
-          
+          axiosInstance.get('http://localhost:8000/source_count'), // Fetch source counts
         ]);
 
         setIpCount(ip.data.ip_count.toString());
         setDomainCount(domain.data.domain_count.toString());
         setUrlCount(url.data.url_count.toString());
         setHashCount(hash.data.hash_count.toString());
-        
+        setSourceCounts(sources.data); // Set the source counts data
 
       } catch (err) {
         console.error('Error fetching threat data:', err.message);
@@ -98,9 +100,9 @@ function Dashboard({ user }) {
         </div>
 
         {/* Chart Section */}
-        {(ipCount && domainCount && urlCount && hashCount) && (
-          <div className="flex flex-wrap gap-6 bg-[#0E0B16] p-6 rounded shadow">
-            {/* Threat Type Chart */}
+        <div className="flex flex-wrap gap-6 bg-[#0E0B16] p-6 rounded shadow">
+          {/* Threat Type Chart */}
+          {(ipCount && domainCount && urlCount && hashCount) && (
             <div className="bg-gray-100 p-6 rounded shadow w-full md:w-2/3 lg:w-[48%]">
               <ThreatTypeChart
                 ipCount={parseInt(ipCount)}
@@ -109,8 +111,15 @@ function Dashboard({ user }) {
                 hashCount={parseInt(hashCount)}
               />
             </div>
-          </div>
-        )}
+          )}
+
+          {/* Source Counts Chart */}
+          {sourceCounts.length > 0 && (
+            <div className="bg-gray-100 p-6 rounded shadow w-full md:w-2/3 lg:w-[48%]">
+              <SourceCountsChart data={sourceCounts} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
