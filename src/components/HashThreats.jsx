@@ -6,8 +6,8 @@ function HashThreats() {
   const [error, setError] = useState('');
   const [searchHash, setSearchHash] = useState('');
   const [matchedHash, setMatchedHash] = useState(null);
-  const [visibleHashCount, setVisibleHashCount] = useState(50); // Initially show 50 hashes
-  const [allHashData, setAllHashData] = useState([]); // Store all hash data
+  const [visibleHashCount, setVisibleHashCount] = useState(50);
+  const [allHashData, setAllHashData] = useState([]);
 
   useEffect(() => {
     const fetchHashThreats = async () => {
@@ -15,14 +15,15 @@ function HashThreats() {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No token found');
 
-        const response = await axios.get('http://localhost:8000/threat_hashes', {
+        const response = await axios.get('http://localhost:8000/threats/hashes', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        setAllHashData(response.data); // Store all hash data
-        setHashData(response.data.slice(0, visibleHashCount)); // Show only the first 50 initially
+        // Assuming response.data is an array of strings
+        setAllHashData(response.data);
+        setHashData(response.data.slice(0, visibleHashCount));
       } catch (err) {
         console.error('Failed to fetch hash data:', err.message);
         setError('Failed to load hash threat data.');
@@ -30,17 +31,24 @@ function HashThreats() {
     };
 
     fetchHashThreats();
-  }, [visibleHashCount]); // Depend on visibleHashCount to trigger new data load
+  }, []); // Run only once on mount, NOT on visibleHashCount
+
+  // Update visible slice when visibleHashCount or allHashData changes
+  useEffect(() => {
+    setHashData(allHashData.slice(0, visibleHashCount));
+  }, [visibleHashCount, allHashData]);
 
   const handleSearch = () => {
-    const found = hashData.find((item) => item.value === searchHash.trim());
-    setMatchedHash(found ? found.value : null);
+    // If hash items are strings:
+    const found = allHashData.find((item) => item === searchHash.trim());
+    setMatchedHash(found || null);
+
+    // If your data is actually objects like {value: 'hashstring'}, use:
+    // const found = allHashData.find(item => item.value === searchHash.trim());
   };
 
   const handleSeeMore = () => {
-    const newVisibleCount = visibleHashCount + 50;
-    setVisibleHashCount(newVisibleCount);
-    setHashData(allHashData.slice(0, newVisibleCount)); // Load the next set of 50 hashes
+    setVisibleHashCount((prev) => prev + 50);
   };
 
   return (
@@ -95,7 +103,8 @@ function HashThreats() {
               <ul className="space-y-2">
                 {hashData.map((item, idx) => (
                   <li key={idx} className="text-lg text-gray-800 hover:text-blue-500 transition duration-200">
-                    {item.value}
+                    {item}
+                    {/* if item is an object, use item.value */}
                   </li>
                 ))}
               </ul>

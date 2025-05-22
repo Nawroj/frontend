@@ -6,35 +6,42 @@ function URLThreats({ user }) {
   const [error, setError] = useState('');
   const [searchUrl, setSearchUrl] = useState('');
   const [matchedUrl, setMatchedUrl] = useState(null);
-  const [visibleUrlCount, setVisibleUrlCount] = useState(50); // Initially show 50 URLs
-  const [allUrlData, setAllUrlData] = useState([]); // Store all URL data
+  const [visibleUrlCount, setVisibleUrlCount] = useState(50);
+  const [allUrlData, setAllUrlData] = useState([]);
 
   useEffect(() => {
     const fetchUrls = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/threat_urls', {
+        const response = await axios.get('http://localhost:8000/threats/urls', {
           headers: { Authorization: `Bearer ${user.token}` },
         });
-        setAllUrlData(response.data); // Store all URL data
-        setUrlData(response.data.slice(0, visibleUrlCount)); // Show only the first 50 initially
+
+        console.log('Fetched URLs:', response.data); // Debugging output
+
+        // Assume array of strings
+        setAllUrlData(response.data);
+        setUrlData(response.data.slice(0, visibleUrlCount));
       } catch (err) {
-        console.error(err.message);
+        console.error('Error fetching URLs:', err.message);
         setError('Failed to load URL threats.');
       }
     };
 
     fetchUrls();
-  }, [user.token, visibleUrlCount]); // Fetch again when visibleUrlCount changes
+  }, [user.token]);
+
+  // Update the visible URLs when visible count or full data changes
+  useEffect(() => {
+    setUrlData(allUrlData.slice(0, visibleUrlCount));
+  }, [visibleUrlCount, allUrlData]);
 
   const handleSearch = () => {
-    const found = urlData.find((item) => item.value === searchUrl.trim());
-    setMatchedUrl(found ? found.value : null);
+    const found = allUrlData.find((item) => item === searchUrl.trim());
+    setMatchedUrl(found || null);
   };
 
   const handleSeeMore = () => {
-    const newVisibleCount = visibleUrlCount + 50;
-    setVisibleUrlCount(newVisibleCount);
-    setUrlData(allUrlData.slice(0, newVisibleCount)); // Load the next set of 50 URLs
+    setVisibleUrlCount((prev) => prev + 50);
   };
 
   return (
@@ -89,7 +96,7 @@ function URLThreats({ user }) {
               <ul className="space-y-2">
                 {urlData.map((item, idx) => (
                   <li key={idx} className="text-lg text-gray-800 hover:text-blue-500 transition duration-200">
-                    {item.value}
+                    {item}
                   </li>
                 ))}
               </ul>

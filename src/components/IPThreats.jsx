@@ -10,25 +10,30 @@ function IPThreats() {
   const [allIpData, setAllIpData] = useState([]); // Store all IP data
 
   useEffect(() => {
-    const fetchIps = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/threat_ips', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }, // Fixed to use token from localStorage
-        });
-        setAllIpData(response.data); // Store all IP data
-        setIpData(response.data.slice(0, visibleIpCount)); // Show only the first 50 initially
-      } catch (err) {
-        console.error(err.message);
-        setError('Failed to load IP threats.');
-      }
-    };
+  const fetchIps = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/threats/ips', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      setAllIpData(response.data);
+      setIpData(response.data.slice(0, 50));
+    } catch (err) {
+      console.error(err.message);
+      setError('Failed to load IP threats.');
+    }
+  };
 
-    fetchIps();
-  }, [visibleIpCount]); // Only re-run when visibleIpCount changes
+  fetchIps();
+}, []); // only run once
+
+useEffect(() => {
+  setIpData(allIpData.slice(0, visibleIpCount));
+}, [visibleIpCount, allIpData]);
+
 
   const handleSearch = () => {
-    const found = ipData.find((item) => item.value === searchIP.trim());
-    setMatchedIP(found ? found.value : null);
+    const found = ipData.find((item) => item === searchIP.trim());
+    setMatchedIP(found || null);
   };
 
   const handleSeeMore = () => {
@@ -89,7 +94,7 @@ function IPThreats() {
               <ul className="space-y-2">
                 {ipData.map((item, idx) => (
                   <li key={idx} className="text-lg text-gray-800 hover:text-blue-500 transition duration-200">
-                    {item.value}
+                    {item}
                   </li>
                 ))}
               </ul>

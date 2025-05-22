@@ -2,21 +2,22 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function DomainThreats({ user }) {
+  const [allDomainData, setAllDomainData] = useState([]);
   const [domainData, setDomainData] = useState([]);
-  const [error, setError] = useState('');
+  const [visibleDomainCount, setVisibleDomainCount] = useState(50);
   const [searchDomain, setSearchDomain] = useState('');
   const [matchedDomain, setMatchedDomain] = useState(null);
-  const [visibleDomainCount, setVisibleDomainCount] = useState(50); // Initially show 50 domains
-  const [allDomainData, setAllDomainData] = useState([]); // Store all domain data
+  const [error, setError] = useState('');
 
+  // Fetch all domains once when component mounts or user.token changes
   useEffect(() => {
     const fetchDomains = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/threat_domains', {
+        const response = await axios.get('http://localhost:8000/threats/domains', {
           headers: { Authorization: `Bearer ${user.token}` },
         });
-        setAllDomainData(response.data); // Store all domains
-        setDomainData(response.data.slice(0, visibleDomainCount)); // Show only the first 50 initially
+        setAllDomainData(response.data);
+        setDomainData(response.data.slice(0, visibleDomainCount)); // Initially show 50
       } catch (err) {
         console.error(err.message);
         setError('Failed to load domain threats.');
@@ -24,17 +25,22 @@ function DomainThreats({ user }) {
     };
 
     fetchDomains();
-  }, [user.token, visibleDomainCount]);
+  }, [user.token]);
+
+  // Update the visible domain list when visibleDomainCount changes
+  useEffect(() => {
+    setDomainData(allDomainData.slice(0, visibleDomainCount));
+  }, [visibleDomainCount, allDomainData]);
 
   const handleSearch = () => {
-    const found = domainData.find((item) => item.value === searchDomain.trim());
-    setMatchedDomain(found ? found.value : null);
+    const found = allDomainData.find(
+      (item) => item.toLowerCase() === searchDomain.trim().toLowerCase()
+    );
+    setMatchedDomain(found || null);
   };
 
   const handleSeeMore = () => {
-    const newVisibleCount = visibleDomainCount + 50;
-    setVisibleDomainCount(newVisibleCount);
-    setDomainData(allDomainData.slice(0, newVisibleCount)); // Load the next set of 50 domains
+    setVisibleDomainCount((prev) => prev + 50);
   };
 
   return (
@@ -88,8 +94,11 @@ function DomainThreats({ user }) {
             ) : (
               <ul className="space-y-2">
                 {domainData.map((item, idx) => (
-                  <li key={idx} className="text-lg text-gray-800 hover:text-blue-500 transition duration-200">
-                    {item.value}
+                  <li
+                    key={idx}
+                    className="text-lg text-gray-800 hover:text-blue-500 transition duration-200"
+                  >
+                    {item}
                   </li>
                 ))}
               </ul>

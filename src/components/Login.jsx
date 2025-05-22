@@ -9,21 +9,24 @@ const Login = ({ setUser }) => {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:8000/token', {
-        username,
-        password
-      }, {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-      });
-      localStorage.setItem('token', response.data.access_token);
-      setUser({ token: response.data.access_token });
-      navigate('/dashboard');
-    } catch (err) {
-      setError('Invalid credentials');
-    }
-  };
+  e.preventDefault();
+  try {
+    const params = new URLSearchParams();
+    params.append('username', username);
+    params.append('password', password);
+
+    const response = await axios.post('http://localhost:8000/auth/token', params, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    });
+
+    localStorage.setItem('token', response.data.access_token);
+    setUser({ token: response.data.access_token });
+    navigate('/dashboard');
+  } catch (err) {
+    setError('Invalid credentials');
+  }
+};
+
 
   return (
     <div className="flex items-center justify-center h-screen bg-[#0E0B16]">
