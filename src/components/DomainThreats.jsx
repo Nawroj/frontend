@@ -8,11 +8,13 @@ function DomainThreats({ user }) {
   const [searchDomain, setSearchDomain] = useState('');
   const [matchedDomain, setMatchedDomain] = useState(null);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
   // Fetch all domains once when component mounts or user.token changes
   useEffect(() => {
     const fetchDomains = async () => {
       try {
+        setLoading(true);
         const response = await axios.get('http://localhost:8000/threats/domains', {
           headers: { Authorization: `Bearer ${user.token}` },
         });
@@ -21,7 +23,9 @@ function DomainThreats({ user }) {
       } catch (err) {
         console.error(err.message);
         setError('Failed to load domain threats.');
-      }
+      } finally {
+      setLoading(false);
+    }
     };
 
     fetchDomains();
@@ -48,9 +52,15 @@ function DomainThreats({ user }) {
       {/* Top Bar */}
       <div className="bg-[#161025] p-4 flex items-center justify-between shadow-md">
         <img src="/logo.png" alt="Logo" className="h-10 w-auto" />
-        <div />
+        <button
+          onClick={() => {
+          localStorage.removeItem('token');
+          window.location.href = '/login';
+          }}
+        className="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition">
+        Logout
+        </button>
       </div>
-
       {/* Main Content */}
       <div className="flex flex-1 justify-center items-center p-6">
         <div className="w-full max-w-4xl">
@@ -89,7 +99,11 @@ function DomainThreats({ user }) {
 
           {/* Domain Threat List */}
           <div className="bg-white rounded-lg shadow-lg p-6 mt-4">
-            {domainData.length === 0 ? (
+            {loading ? (
+              <div className="flex justify-center items-center py-10">
+                <div className="w-10 h-10 border-4 border-blue-500 border-dashed rounded-full animate-spin" />
+              </div>
+            ) : domainData.length === 0 ? (
               <p className="text-center text-gray-500">No domain threats found.</p>
             ) : (
               <ul className="space-y-2">

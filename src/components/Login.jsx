@@ -58,6 +58,16 @@ const Login = ({ setUser }) => {
             Login
           </button>
         </form>
+        {/* Register Link */}
+        <p className="mt-4 text-sm text-white">
+  Don't have an account?{' '}
+  <span
+    className="text-blue-400 underline cursor-pointer"
+    onClick={() => navigate('/register')}
+  >
+    Register here
+  </span>
+</p>
       </div>
     </div>
   );

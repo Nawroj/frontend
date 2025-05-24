@@ -3,24 +3,28 @@ import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 
 Chart.register(ArcElement, Tooltip, Legend);
 
-function ThreatTypeChart({ ipCount, domainCount, urlCount, hashCount }) {
+function ThreatTypeChart({ ipCount, domainCount, urlCount, hashCount, emailCount, regkeyCount }) {
   const data = {
-    labels: ['IP', 'Domain', 'URL', 'Hash'],
+    labels: ['IP', 'Domain', 'URL', 'Hash', 'Email', 'Regkey'],
     datasets: [
       {
         label: 'Threat Type Distribution',
-        data: [ipCount, domainCount, urlCount, hashCount],
+        data: [ipCount, domainCount, urlCount, hashCount, emailCount, regkeyCount],
         backgroundColor: [
           'rgba(96, 80, 220, 0.7)',
           'rgba(213, 45, 183, 0.7)',
           'rgba(255, 107, 69, 0.7)',
           'rgba(255, 171, 5, 0.7)',
+          'rgba(0, 200, 190, 0.7)',
+          'rgba(120, 200, 100, 0.7)',
         ],
         borderColor: [
           'rgba(96, 80, 220, 1)',
           'rgba(213, 45, 183, 1)',
           'rgba(255, 107, 69, 1)',
           'rgba(255, 171, 5, 1)',
+          'rgba(0, 200, 190, 1)',
+          'rgba(120, 200, 100, 1)',
         ],
         borderWidth: 1,
       },

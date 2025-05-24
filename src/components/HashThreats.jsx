@@ -8,10 +8,12 @@ function HashThreats() {
   const [matchedHash, setMatchedHash] = useState(null);
   const [visibleHashCount, setVisibleHashCount] = useState(50);
   const [allHashData, setAllHashData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchHashThreats = async () => {
       try {
+        setLoading(true);
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No token found');
 
@@ -27,7 +29,9 @@ function HashThreats() {
       } catch (err) {
         console.error('Failed to fetch hash data:', err.message);
         setError('Failed to load hash threat data.');
-      }
+      } finally {
+      setLoading(false);
+    }
     };
 
     fetchHashThreats();
@@ -56,7 +60,14 @@ function HashThreats() {
       {/* Top Bar */}
       <div className="bg-[#161025] p-4 flex items-center justify-between shadow-md">
         <img src="/logo.png" alt="Logo" className="h-10 w-auto" />
-        <div />
+        <button
+          onClick={() => {
+          localStorage.removeItem('token');
+          window.location.href = '/login';
+          }}
+        className="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition">
+        Logout
+        </button>
       </div>
 
       {/* Main Content */}
@@ -97,7 +108,11 @@ function HashThreats() {
 
           {/* Hash Threat List */}
           <div className="bg-white rounded-lg shadow-lg p-6 mt-4">
-            {hashData.length === 0 ? (
+            {loading ? (
+              <div className="flex justify-center items-center py-10">
+                <div className="w-10 h-10 border-4 border-blue-500 border-dashed rounded-full animate-spin" />
+              </div>
+            ) : hashData.length === 0 ? (
               <p className="text-center text-gray-500">No hash threats found.</p>
             ) : (
               <ul className="space-y-2">

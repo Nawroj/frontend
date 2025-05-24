@@ -1,12 +1,11 @@
-// SourceCountsChart.js
 import React from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
 
-// Custom tick: limit to first 5 words and show in two lines
+// Custom Y-axis tick: show only first 5 words split into max 2 lines
 const renderYAxisTickWithMaxFiveWords = ({ x, y, payload }) => {
-  const words = payload.value.split(' ').slice(0, 5); // Only keep first 5 words
+  const words = payload.value.split(' ').slice(0, 5);
   const lines = [];
 
   let currentLine = '';
@@ -40,12 +39,12 @@ const renderYAxisTickWithMaxFiveWords = ({ x, y, payload }) => {
   );
 };
 
-const SourceCountsChart = ({ data }) => {
+const AttrCountsChart = ({ data }) => {
   const top10Data = [...data].sort((a, b) => b.count - a.count).slice(0, 10);
 
   return (
     <div>
-      <h3 className="text-xl font-semibold mb-2">Top 10 Threat Sources</h3>
+      <h3 className="text-xl font-semibold mb-2">Top 10 Attribute Counts by Event</h3>
       <ResponsiveContainer width="100%" height={400}>
         <BarChart
           data={top10Data}
@@ -56,7 +55,7 @@ const SourceCountsChart = ({ data }) => {
           <XAxis type="number" />
           <YAxis
             type="category"
-            dataKey="source"
+            dataKey="event"
             tick={renderYAxisTickWithMaxFiveWords}
             width={160}
           />
@@ -68,4 +67,4 @@ const SourceCountsChart = ({ data }) => {
   );
 };
 
-export default SourceCountsChart;
+export default AttrCountsChart;

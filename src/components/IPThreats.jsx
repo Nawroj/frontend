@@ -8,10 +8,12 @@ function IPThreats() {
   const [matchedIP, setMatchedIP] = useState(null);
   const [visibleIpCount, setVisibleIpCount] = useState(50); // Initially show 50 IPs
   const [allIpData, setAllIpData] = useState([]); // Store all IP data
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
   const fetchIps = async () => {
     try {
+      setLoading(true);
       const response = await axios.get('http://localhost:8000/threats/ips', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
@@ -20,6 +22,8 @@ function IPThreats() {
     } catch (err) {
       console.error(err.message);
       setError('Failed to load IP threats.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,7 +51,14 @@ useEffect(() => {
       {/* Top Bar */}
       <div className="bg-[#161025] p-4 flex items-center justify-between shadow-md">
         <img src="/logo.png" alt="Logo" className="h-10 w-auto" />
-        <div />
+        <button
+          onClick={() => {
+          localStorage.removeItem('token');
+          window.location.href = '/login';
+          }}
+        className="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition">
+        Logout
+        </button>
       </div>
 
       {/* Main Content */}
@@ -88,7 +99,11 @@ useEffect(() => {
 
           {/* IP Threat List */}
           <div className="bg-white rounded-lg shadow-lg p-6 mt-4">
-            {ipData.length === 0 ? (
+            {loading ? (
+              <div className="flex justify-center items-center py-10">
+                <div className="w-10 h-10 border-4 border-blue-500 border-dashed rounded-full animate-spin" />
+              </div>
+            ) : ipData.length === 0 ? (
               <p className="text-center text-gray-500">No IP threats found.</p>
             ) : (
               <ul className="space-y-2">
