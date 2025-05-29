@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom'
 
 function URLThreats({ user }) {
   const [urlData, setUrlData] = useState([]);
@@ -51,17 +52,20 @@ function URLThreats({ user }) {
   return (
     <div className="min-h-screen bg-[#0E0B16] flex flex-col">
       {/* Top Bar */}
-      <div className="bg-[#161025] p-4 flex items-center justify-between shadow-md">
-        <img src="/logo.png" alt="Logo" className="h-10 w-auto" />
-        <button
-          onClick={() => {
-          localStorage.removeItem('token');
-          window.location.href = '/login';
-          }}
-        className="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition">
-        Logout
-        </button>
-      </div>
+      <header className="bg-[#161025] p-4 flex items-center justify-between shadow-md">
+  <Link to="/">
+    <img src="/logo.png" alt="Logo" className="h-10 w-auto cursor-pointer" />
+  </Link>
+  <button
+    onClick={() => {
+      localStorage.removeItem('token');
+      window.location.href = '/';
+    }}
+    className="text-sm bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition duration-300"
+  >
+    Logout
+  </button>
+</header>
 
       {/* Main Content */}
       <div className="flex flex-1 justify-center items-center p-6">
@@ -110,9 +114,13 @@ function URLThreats({ user }) {
             ) : (
               <ul className="space-y-2">
                 {urlData.map((item, idx) => (
-                  <li key={idx} className="text-lg text-gray-800 hover:text-blue-500 transition duration-200">
-                    {item}
-                  </li>
+                  <li
+  key={idx}
+  className="text-lg text-gray-800 hover:text-blue-500 transition duration-200 cursor-pointer"
+  onClick={() => window.location.href = `/attribute-detail/${encodeURIComponent(item)}`}
+>
+  {item}
+</li>
                 ))}
               </ul>
             )}

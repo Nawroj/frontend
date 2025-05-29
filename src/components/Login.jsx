@@ -1,37 +1,39 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = ({ setUser }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-  e.preventDefault();
-  try {
-    const params = new URLSearchParams();
-    params.append('username', username);
-    params.append('password', password);
+    e.preventDefault();
+    try {
+      const params = new URLSearchParams();
+      params.append("username", username);
+      params.append("password", password);
 
-    const response = await axios.post('http://localhost:8000/auth/token', params, {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-    });
+      const response = await axios.post(
+        "http://localhost:8000/auth/token",
+        params,
+        {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        }
+      );
 
-    localStorage.setItem('token', response.data.access_token);
-    setUser({ token: response.data.access_token });
-    navigate('/dashboard');
-  } catch (err) {
-    setError('Invalid credentials');
-  }
-};
-
+      localStorage.setItem("token", response.data.access_token);
+      setUser({ token: response.data.access_token });
+      navigate("/");
+    } catch (err) {
+      setError("Invalid credentials");
+    }
+  };
 
   return (
     <div className="flex items-center justify-center h-screen bg-[#0E0B16]">
       <div className="p-8 rounded shadow-md w-96 text-center">
-
         {/* Logo */}
         <div className="flex justify-center mb-6">
           <img src="/logo.png" alt="Logo" className="w-600 h-20" />
@@ -54,20 +56,23 @@ const Login = ({ setUser }) => {
             onChange={(e) => setPassword(e.target.value)}
             className="w-full p-2 mb-4 border rounded"
           />
-          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white p-2 rounded"
+          >
             Login
           </button>
         </form>
         {/* Register Link */}
         <p className="mt-4 text-sm text-white">
-  Don't have an account?{' '}
-  <span
-    className="text-blue-400 underline cursor-pointer"
-    onClick={() => navigate('/register')}
-  >
-    Register here
-  </span>
-</p>
+          Don't have an account?{" "}
+          <span
+            className="text-blue-400 underline cursor-pointer"
+            onClick={() => navigate("/register")}
+          >
+            Register here
+          </span>
+        </p>
       </div>
     </div>
   );

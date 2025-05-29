@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
 function DomainThreats({ user }) {
   const [allDomainData, setAllDomainData] = useState([]);
   const [domainData, setDomainData] = useState([]);
   const [visibleDomainCount, setVisibleDomainCount] = useState(50);
-  const [searchDomain, setSearchDomain] = useState('');
+  const [searchDomain, setSearchDomain] = useState("");
   const [matchedDomain, setMatchedDomain] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
   // Fetch all domains once when component mounts or user.token changes
@@ -15,17 +16,20 @@ function DomainThreats({ user }) {
     const fetchDomains = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:8000/threats/domains', {
-          headers: { Authorization: `Bearer ${user.token}` },
-        });
+        const response = await axios.get(
+          "http://localhost:8000/threats/domains",
+          {
+            headers: { Authorization: `Bearer ${user.token}` },
+          }
+        );
         setAllDomainData(response.data);
         setDomainData(response.data.slice(0, visibleDomainCount)); // Initially show 50
       } catch (err) {
         console.error(err.message);
-        setError('Failed to load domain threats.');
+        setError("Failed to load domain threats.");
       } finally {
-      setLoading(false);
-    }
+        setLoading(false);
+      }
     };
 
     fetchDomains();
@@ -50,21 +54,30 @@ function DomainThreats({ user }) {
   return (
     <div className="min-h-screen bg-[#0E0B16] flex flex-col">
       {/* Top Bar */}
-      <div className="bg-[#161025] p-4 flex items-center justify-between shadow-md">
-        <img src="/logo.png" alt="Logo" className="h-10 w-auto" />
+      <header className="bg-[#161025] p-4 flex items-center justify-between shadow-md">
+        <Link to="/">
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className="h-10 w-auto cursor-pointer"
+          />
+        </Link>
         <button
           onClick={() => {
-          localStorage.removeItem('token');
-          window.location.href = '/login';
+            localStorage.removeItem("token");
+            window.location.href = "/";
           }}
-        className="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition">
-        Logout
+          className="text-sm bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition duration-300"
+        >
+          Logout
         </button>
-      </div>
+      </header>
       {/* Main Content */}
       <div className="flex flex-1 justify-center items-center p-6">
         <div className="w-full max-w-4xl">
-          <h1 className="text-4xl font-semibold text-white mb-6 text-center">Domain Threats</h1>
+          <h1 className="text-4xl font-semibold text-white mb-6 text-center">
+            Domain Threats
+          </h1>
 
           {/* Error Message */}
           {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
@@ -90,9 +103,13 @@ function DomainThreats({ user }) {
           {searchDomain && (
             <div className="text-center mb-6">
               {matchedDomain ? (
-                <p className="text-green-500">✅ Domain found: {matchedDomain}</p>
+                <p className="text-green-500">
+                  ✅ Domain found: {matchedDomain}
+                </p>
               ) : (
-                <p className="text-red-500">❌ Domain not found in threat list</p>
+                <p className="text-red-500">
+                  ❌ Domain not found in threat list
+                </p>
               )}
             </div>
           )}
@@ -104,13 +121,20 @@ function DomainThreats({ user }) {
                 <div className="w-10 h-10 border-4 border-blue-500 border-dashed rounded-full animate-spin" />
               </div>
             ) : domainData.length === 0 ? (
-              <p className="text-center text-gray-500">No domain threats found.</p>
+              <p className="text-center text-gray-500">
+                No domain threats found.
+              </p>
             ) : (
               <ul className="space-y-2">
                 {domainData.map((item, idx) => (
                   <li
                     key={idx}
-                    className="text-lg text-gray-800 hover:text-blue-500 transition duration-200"
+                    className="text-lg text-gray-800 hover:text-blue-500 transition duration-200 cursor-pointer"
+                    onClick={() =>
+                      (window.location.href = `/attribute-detail/${encodeURIComponent(
+                        item
+                      )}`)
+                    }
                   >
                     {item}
                   </li>
