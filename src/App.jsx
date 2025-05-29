@@ -48,10 +48,8 @@ function App() {
         <Route path="/hash-threats" element={user ? <HashThreats user={user} /> : <Navigate to="/login" />} />
         <Route path="/email-threats" element={user ? <EmailThreats user={user} /> : <Navigate to="/login" />} />
         <Route path="/regkey-threats" element={user ? <RegkeyThreats user={user} /> : <Navigate to="/login" />} />
-        <Route
-          path="/attribute-detail/:value"
-          element={user ? <AttributeDetail /> : <Navigate to="/login" />}
-        />
+        <Route path="/attribute-detail/:value" element={<AttributeDetail />} />
+
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
