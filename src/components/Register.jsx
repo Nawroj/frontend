@@ -15,7 +15,7 @@ const Register = () => {
     setSuccess('');
 
     try {
-      const response = await axios.post('http://localhost:8000/register', {
+      const response = await axios.post('http://localhost:8000/auth/register', {
         username,
         password,
         role: 'user' // enforce "user" role from frontend too
