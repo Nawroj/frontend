@@ -33,9 +33,9 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-[#0E0B16]">
-      <div className="p-8 rounded shadow-md w-96 text-center bg-white">
-        <h2 className="text-2xl mb-4">Register</h2>
+    <div className="flex items-center justify-center min-h-screen bg-[#0E0B16]">
+      <div className="p-8 rounded-xl shadow-lg w-96 text-center bg-[#161025]">
+        <h2 className="text-3xl font-semibold mb-6 text-white">Register</h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         {success && <p className="text-green-500 mb-4">{success}</p>}
         <form onSubmit={handleRegister}>
@@ -44,7 +44,7 @@ const Register = () => {
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full p-2 mb-4 border rounded"
+            className="w-full p-3 mb-4 border border-gray-600 rounded-lg bg-[#0E0B16] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
           <input
@@ -52,17 +52,20 @@ const Register = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 mb-4 border rounded"
+            className="w-full p-3 mb-6 border border-gray-600 rounded-lg bg-[#0E0B16] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
-          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold p-3 rounded-lg transition duration-300"
+          >
             Register
           </button>
         </form>
-        <p className="mt-4 text-sm">
+        <p className="mt-6 text-sm text-gray-300">
           Already have an account?{' '}
           <span
-            className="text-blue-600 cursor-pointer underline"
+            className="text-blue-400 hover:text-blue-300 underline cursor-pointer transition duration-300"
             onClick={() => navigate('/login')}
           >
             Login here

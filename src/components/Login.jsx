@@ -27,19 +27,19 @@ const Login = ({ setUser }) => {
       setUser({ token: response.data.access_token });
       navigate("/");
     } catch (err) {
-      setError("Invalid credentials");
+      setError("Invalid credentials. Please try again.");
     }
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-[#0E0B16]">
-      <div className="p-8 rounded shadow-md w-96 text-center">
+    <div className="flex items-center justify-center min-h-screen bg-[#0E0B16]">
+      <div className="p-8 rounded-xl shadow-lg w-96 text-center bg-[#161025]">
         {/* Logo */}
         <div className="flex justify-center mb-6">
-          <img src="/logo.png" alt="Logo" className="w-600 h-20" />
+          <img src="/logo.png" alt="Logo" className="w-52 h-auto" />
         </div>
 
-        <h2 className="text-2xl mb-4 text-white">Welcome Back!</h2>
+        <h2 className="text-3xl font-semibold mb-6 text-white">Welcome Back!</h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <form onSubmit={handleLogin}>
           <input
@@ -47,27 +47,29 @@ const Login = ({ setUser }) => {
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full p-2 mb-4 border rounded"
+            className="w-full p-3 mb-4 border border-gray-600 rounded-lg bg-[#0E0B16] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
           />
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 mb-4 border rounded"
+            className="w-full p-3 mb-6 border border-gray-600 rounded-lg bg-[#0E0B16] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
           />
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold p-3 rounded-lg transition duration-300"
           >
             Login
           </button>
         </form>
         {/* Register Link */}
-        <p className="mt-4 text-sm text-white">
+        <p className="mt-6 text-sm text-gray-300">
           Don't have an account?{" "}
           <span
-            className="text-blue-400 underline cursor-pointer"
+            className="text-blue-400 hover:text-blue-300 underline cursor-pointer transition duration-300"
             onClick={() => navigate("/register")}
           >
             Register here
