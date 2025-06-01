@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import ThreatTypeChart from './ThreatTypeChart';
 import EventCountsChart from './EventCountsChart';
+import EventCategoriesChart from './EventCategoriesChart';
 
 function Dashboard({ user }) {
   const [ipCount, setIpCount] = useState(null);
@@ -13,6 +14,7 @@ function Dashboard({ user }) {
   const [regkeyCount, setRegkeyCount] = useState(null);
   const [error, setError] = useState('');
   const [eventCounts, setEventCounts] = useState([]);
+  const [eventCategories, setEventCategories] = useState([]);
 
   useEffect(() => {
     const fetchThreatData = async () => {
@@ -33,7 +35,8 @@ function Dashboard({ user }) {
           hash,
           email,
           regkey,
-          eventCountsRes
+          eventCountsRes,
+          eventCategoriesRes
         ] = await Promise.all([
           axiosInstance.get('http://localhost:8000/threats/ip_count'),
           axiosInstance.get('http://localhost:8000/threats/domain_count'),
@@ -42,6 +45,7 @@ function Dashboard({ user }) {
           axiosInstance.get('http://localhost:8000/threats/email_count'),
           axiosInstance.get('http://localhost:8000/threats/regkey_count'),
           axiosInstance.get('http://localhost:8000/threats/attr_count'),
+          axiosInstance.get('http://localhost:8000/threats/event_categories'),
         ]);
 
         setIpCount(ip.data.ip_count.toString());
@@ -51,6 +55,7 @@ function Dashboard({ user }) {
         setEmailCount(email.data.email_count.toString());
         setRegkeyCount(regkey.data.regkey_count.toString());
         setEventCounts(eventCountsRes.data);
+        setEventCategories(eventCategoriesRes.data);
       } catch (err) {
         console.error('Error fetching threat data:', err.message);
         setError('Failed to load threat data');
@@ -177,25 +182,35 @@ function Dashboard({ user }) {
         </div>
 
         {/* Chart Section */}
-        <div className="flex flex-wrap gap-6 bg-[#0E0B16] p-6 rounded shadow">
-          {/* Threat Type Chart */}
-          {(ipCount && domainCount && urlCount && hashCount) && (
-            <div className="bg-gray-100 p-6 rounded shadow w-full md:w-2/3 lg:w-[48%]">
-              <ThreatTypeChart
-                ipCount={parseInt(ipCount)}
-                domainCount={parseInt(domainCount)}
-                urlCount={parseInt(urlCount)}
-                hashCount={parseInt(hashCount)}
-                emailCount={parseInt(emailCount)}
-                regkeyCount={parseInt(regkeyCount)}
-              />
-            </div>
-          )}
+        <div className="bg-[#0E0B16] p-6 rounded shadow">
+          {/* Top Row - Two Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Threat Type Chart */}
+            {(ipCount && domainCount && urlCount && hashCount) && (
+              <div className="bg-gray-100 p-6 rounded shadow">
+                <ThreatTypeChart
+                  ipCount={parseInt(ipCount)}
+                  domainCount={parseInt(domainCount)}
+                  urlCount={parseInt(urlCount)}
+                  hashCount={parseInt(hashCount)}
+                  emailCount={parseInt(emailCount)}
+                  regkeyCount={parseInt(regkeyCount)}
+                />
+              </div>
+            )}
 
-          {/* Event Counts Chart */}
-          {eventCounts.length > 0 && (
-            <div className="bg-gray-100 p-6 rounded shadow w-full md:w-2/3 lg:w-[48%]">
-              <EventCountsChart data={eventCounts} />
+            {/* Event Counts Chart */}
+            {eventCounts.length > 0 && (
+              <div className="bg-gray-100 p-6 rounded shadow">
+                <EventCountsChart data={eventCounts} />
+              </div>
+            )}
+          </div>
+
+          {/* Bottom Row - Full Width Event Categories Chart */}
+          {eventCategories.length > 0 && (
+            <div className="bg-gray-100 p-6 rounded shadow">
+              <EventCategoriesChart data={eventCategories} />
             </div>
           )}
         </div>
