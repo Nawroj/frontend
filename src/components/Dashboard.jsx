@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import ThreatTypeChart from './ThreatTypeChart';
 import EventCountsChart from './EventCountsChart';
 import EventCategoriesChart from './EventCategoriesChart';
+import ThreatLevelChart from "./ThreatLevelChart";
 
 function Dashboard({ user }) {
   const [ipCount, setIpCount] = useState(null);
@@ -205,6 +206,7 @@ function Dashboard({ user }) {
                 <EventCountsChart data={eventCounts} />
               </div>
             )}
+<ThreatLevelChart />
           </div>
 
           {/* Bottom Row - Full Width Event Categories Chart */}
@@ -213,6 +215,7 @@ function Dashboard({ user }) {
               <EventCategoriesChart data={eventCategories} />
             </div>
           )}
+          
         </div>
       </div>
     </div>
