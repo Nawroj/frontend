@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import ThreatTypeChart from './ThreatTypeChart';
 import EventCountsChart from './EventCountsChart';
+import ThreatLevelChart from "./ThreatLevelChart";
 import EventCategoriesChart from './EventCategoriesChart';
 import { FiCalendar } from 'react-icons/fi'; // For Date Filter UI
 
@@ -328,6 +329,7 @@ function Dashboard({ user }) {
               )}
             </div>
           </div>
+          <ThreatLevelChart />
 
           {/* --- Row 2: Attribute Categories Distribution --- */}
           {/* This chart will take the full width of its row */}
