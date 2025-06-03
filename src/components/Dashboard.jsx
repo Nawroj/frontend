@@ -5,6 +5,7 @@ import ThreatTypeChart from './ThreatTypeChart';
 import EventCountsChart from './EventCountsChart';
 import ThreatLevelChart from "./ThreatLevelChart"; // Ensure this is correctly imported
 import EventCategoriesChart from './EventCategoriesChart';
+import IPHeatmap from './IPHeatmap';
 import { FiCalendar } from 'react-icons/fi'; // For Date Filter UI
 
 function Dashboard({ user }) {
@@ -363,6 +364,12 @@ function Dashboard({ user }) {
               )}
             </div>
           </div>
+
+          {/* IPHeatmap component */}
+        <div className="mt-10 bg-[#0E0B16] p-6 rounded shadow">
+          <h3 className="text-xl font-semibold mb-4 text-gray-800 text-center">IP Heatmap</h3>
+          <IPHeatmap />
+        </div>
           
         </div>
       </div> {/* End of max-w-7xl container */} {/* */}
