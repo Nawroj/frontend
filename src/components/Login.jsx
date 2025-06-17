@@ -16,7 +16,7 @@ const Login = ({ setUser }) => {
       params.append("password", password);
 
       const response = await axios.post(
-        "http://localhost:8000/auth/token",
+        `${process.env.REACT_APP_API_URL}/auth/token`,
         params,
         {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
